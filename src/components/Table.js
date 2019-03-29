@@ -1,15 +1,16 @@
 import React from 'react';
-import ReactDOM from "react-dom";
 import * as Actions from '../actions/Actions'
 import Store from "../stores/Store";
 import Pagination from "react-js-pagination";
+import ReactTooltip from 'react-tooltip'
 import "../styles/table.scss"
 
-export default class App extends React.Component {
+export default class Table extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            buttonPressedTimer: 5,
             currentPage: 1,
             countriesPerPage: 10,
             countries: [],
@@ -17,7 +18,9 @@ export default class App extends React.Component {
         this.sortBy.bind(this);
         this.compareBy.bind(this);
         this.storeChanged = this.storeChanged.bind(this);
-        this.handlePageChange = this.handlePageChange.bind(this)
+        this.handlePageChange = this.handlePageChange.bind(this);
+        this.handleButtonPress = this.handleButtonPress.bind(this);
+        this.handleButtonRelease = this.handleButtonRelease.bind(this);
     }
 
     componentDidMount() {
@@ -57,6 +60,25 @@ export default class App extends React.Component {
             currentPage: pageNumber
         });
     }
+    handleButtonPress(){
+        let that = this;
+        this.interval = setInterval(() => {
+        if(that.state.buttonPressedTimer > 0){
+            that.setState({
+                buttonPressedTimer: that.state.buttonPressedTimer - 1
+            })
+        }
+        else if (that.state.buttonPressedTimer === 0){
+            alert('OPEN VIEW');
+        }
+    }, 1000); }
+
+    handleButtonRelease(){
+        clearTimeout(this.interval);
+        this.setState({
+            buttonPressedTimer: 5
+        })
+    }
 
     render() {
 
@@ -69,7 +91,7 @@ export default class App extends React.Component {
                 <div className="container-table100">
                     <div className="wrap-table100">
                         <div className="table100">
-                            <div className="text-center">s
+                            <div className="text-center">
                                 <Pagination
                                     prevPageText='prev'
                                     nextPageText='next'
@@ -97,8 +119,17 @@ export default class App extends React.Component {
                                 <tbody>{
                                     currentCountries.map((country) => {
                                         return(
-                                            <tr key={country.numericCode}>
-                                                <td className="column1"><img src={country.flag}/></td>
+                                            <tr key={country.numericCode}
+                                                onMouseDown={() => this.handleButtonPress()}
+                                                onMouseUp={() => this.handleButtonRelease()}
+                                                onMouseLeave={() => this.handleButtonRelease()}
+                                                data-tip data-for={country.numericCode}>
+                                                <td className="column1">
+                                                    <img src={country.flag}/>
+                                                    <ReactTooltip id={country.numericCode} place="top" type="info" effect="float">
+                                                        <span>{this.state.buttonPressedTimer}</span>
+                                                    </ReactTooltip>
+                                                </td>
                                                 <td className="column2"><span>{country.name}</span></td>
                                                 <td className="column3"><span>{country.capital}</span></td>
                                                 <td className="column4"><span>{country.population}</span></td>
