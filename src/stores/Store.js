@@ -21,6 +21,11 @@ class Store extends EventEmitter {
         this.data.countries = [...actionData];
         this.emit('change');
     }
+
+    getCountries() {
+        return this.data.countries;
+    }
+
     handleActions(action) {
         this._actionMap[action.type] && this._actionMap[action.type](action.data);
     }

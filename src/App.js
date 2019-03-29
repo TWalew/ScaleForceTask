@@ -1,25 +1,14 @@
 import React from 'react';
-import * as Actions from './actions/Actions'
+import Table from "./components/Table";
+import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      countries: [],
-    };
-  }
+export default class Home extends React.Component {
   render() {
-    let countries = Actions.GetAll();
-    console.log(countries);
-    this.setState(
-        countries,
-    );
     return (
-      <div className="App">
-        <h1>hello worlds</h1>
-      </div>
+        <div className="App">
+          <Table/>
+        </div>
     );
   }
 }

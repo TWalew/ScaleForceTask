@@ -1,5 +1,6 @@
-export function GetAllCountries() {
+export function GetAllCountries(countries) {
     return {
-        type: 'GETALLCOUNTRIES'
+        type: 'GETALLCOUNTRIES',
+        data: countries
     }
 }

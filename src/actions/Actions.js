@@ -3,7 +3,7 @@ import {GetAllCountries} from "./ActionCreators";
 import Service from "../services/Service";
 
 export function GetAll() {
-    Service.GetAllCampaigns().then(response => {
+    Service.GetAllCountries().then(response => {
         if (response) {
             dispatcher.dispatch(GetAllCountries(response));
         }
