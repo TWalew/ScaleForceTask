@@ -1,6 +1,24 @@
 .limiter {
   width: 100%;
   margin: 0 auto;
+  input{
+    width: 25%;
+  }
+  .auto-suggest{
+    padding: 0;
+    li{
+      list-style-type: none;
+      margin: 5px auto;
+      cursor: pointer;
+      .suggestion-box{
+        width: 25%;
+        margin: 5px auto;
+        background-color: white;
+        border: 1px solid black;
+
+      }
+    }
+  }
 }
 img{
   width: 50px;

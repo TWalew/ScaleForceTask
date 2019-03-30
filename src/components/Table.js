@@ -3,7 +3,10 @@ import * as Actions from '../actions/Actions'
 import Store from "../stores/Store";
 import Pagination from "react-js-pagination";
 import ReactTooltip from 'react-tooltip'
+import { browserHistory } from 'react-router'
 import "../styles/table.scss"
+
+let searchString = "";
 
 export default class Table extends React.Component {
     constructor(props) {
@@ -13,11 +16,14 @@ export default class Table extends React.Component {
             buttonPressedTimer: 5,
             currentPage: 1,
             countriesPerPage: 10,
+            searchString: '',
             countries: [],
+            country: []
         };
         this.sortBy.bind(this);
         this.compareBy.bind(this);
         this.storeChanged = this.storeChanged.bind(this);
+        // this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handlePageChange = this.handlePageChange.bind(this);
         this.handleButtonPress = this.handleButtonPress.bind(this);
         this.handleButtonRelease = this.handleButtonRelease.bind(this);
@@ -35,9 +41,11 @@ export default class Table extends React.Component {
 
     storeChanged(){
         let countries = Store.getCountries();
-        console.log("StoreChanged", countries);
+        let country = Store.getCountry();
+        console.log("StoreChanged", country);
         this.setState({
             countries,
+            country: country.slice(0,10)
         });
     }
 
@@ -60,7 +68,7 @@ export default class Table extends React.Component {
             currentPage: pageNumber
         });
     }
-    handleButtonPress(){
+    handleButtonPress(name){
         let that = this;
         this.interval = setInterval(() => {
         if(that.state.buttonPressedTimer > 0){
@@ -69,7 +77,7 @@ export default class Table extends React.Component {
             })
         }
         else if (that.state.buttonPressedTimer === 0){
-            alert('OPEN VIEW');
+            window.location.assign('/view?name=' + name);
         }
     }, 1000); }
 
@@ -80,14 +88,43 @@ export default class Table extends React.Component {
         })
     }
 
+    handleKeyPress = (event) => {
+        console.log(event.key);
+        if (event.key !== 'Backspace' && event.key !== 'Shift' && event.key !== 'CapsLock' && event.key !== 'Tab' && event.key !== 'Alt') {
+            searchString+=event.key;
+        }else{
+            searchString = searchString.slice(0,-1)
+        }
+        console.log(searchString);
+        Actions.GetCountry(searchString)
+    };
+
+    handleCountryClick(name){
+        window.location.assign('/view?name=' + name);
+    }
+
     render() {
 
         const countries = this.state.countries;
+        const country = this.state.country;
         const indexOfLastCountry = this.state.currentPage * this.state.countriesPerPage;
         const indexOfFirstCountry = indexOfLastCountry - this.state.countriesPerPage;
         const currentCountries = countries.slice(indexOfFirstCountry, indexOfLastCountry);
         return (
             <div className="limiter container">
+                <input placeholder="Search for Countries" type="text" onKeyDown={this.handleKeyPress}/>
+                <ul className='auto-suggest'>{
+                    country.map((country) => {
+                        return(
+                            <li>
+                                <div onClick={() => this.handleCountryClick(country.name)} className='suggestion-box'>
+                                    <img src={country.flag} />
+                                    <span>{country.name}</span>
+                                </div>
+                            </li>
+                        )
+                    })
+                }</ul>
                 <div className="container-table100">
                     <div className="wrap-table100">
                         <div className="table100">
@@ -120,7 +157,7 @@ export default class Table extends React.Component {
                                     currentCountries.map((country) => {
                                         return(
                                             <tr key={country.numericCode}
-                                                onMouseDown={() => this.handleButtonPress()}
+                                                onMouseDown={() => this.handleButtonPress(country.name)}
                                                 onMouseUp={() => this.handleButtonRelease()}
                                                 onMouseLeave={() => this.handleButtonRelease()}
                                                 data-tip data-for={country.numericCode}>
@@ -161,4 +198,4 @@ export default class Table extends React.Component {
             </div>
         );
     }
- className="col-sm-2"}
+}

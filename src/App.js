@@ -1,14 +1,12 @@
 import React from 'react';
-import Table from "./components/Table";
+import Main from "./components/Main";
 import 'bootstrap/dist/css/bootstrap.css';
 import './App.css';
 
-export default class App extends React.Component {
-  render() {
-    return (
-        <div className="App">
-          <Table/>
-        </div>
-    );
-  }
-}
+const App = () => (
+    <div className='App'>
+        <Main />
+    </div>
+)
+
+export default App

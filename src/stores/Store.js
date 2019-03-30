@@ -3,6 +3,7 @@ import dispatcher from '../dispatchers/Dispatcher'
 
 
 const ACT_GETALLCOUNTRIES = 'GETALLCOUNTRIES';
+const ACT_GETSPECIFICCOUNTRY = 'GETSPECIFICCOUNTRY';
 
 class Store extends EventEmitter {
     constructor() {
@@ -10,10 +11,12 @@ class Store extends EventEmitter {
 
         this.data = {
             countries: [],
+            country: [],
         };
 
         this._actionMap = {
             [ACT_GETALLCOUNTRIES]: this._getAllCountries.bind(this),
+            [ACT_GETSPECIFICCOUNTRY]: this._getCountryByName.bind(this),
         };
     }
 
@@ -22,8 +25,17 @@ class Store extends EventEmitter {
         this.emit('change');
     }
 
+    _getCountryByName(actionData){
+        this.data.country = [...actionData];
+        this.emit('change');
+    }
+
     getCountries() {
         return this.data.countries;
+    }
+
+    getCountry() {
+        return this.data.country;
     }
 
     handleActions(action) {

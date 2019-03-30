@@ -7,7 +7,17 @@ export default class Service {
                 method: 'GET',
                 url: `https://restcountries.eu/rest/v2/all`
             }).then(function (response) {
-                    console.log( JSON.parse(response));
+                    return JSON.parse(response);
+                }
+            ).catch((e) => console.log('ERR', e))
+        )
+    }
+    static GetCountryByName(name) {
+        return (
+            DoHttpRequest({
+                method: 'GET',
+                url: `https://restcountries.eu/rest/v2/name/` + name + '?limitTo',
+            }).then(function (response) {
                     return JSON.parse(response);
                 }
             ).catch((e) => console.log('ERR', e))
